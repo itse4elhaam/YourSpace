@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { SignInButton, SignOutButton } from "./components/buttons";
+import { SignInButton, SignOutButton } from "../components/buttons";
 
 export default function Home() {
 	return (
