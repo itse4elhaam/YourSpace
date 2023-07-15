@@ -1,5 +1,6 @@
 import { prisma } from "src/lib/prisma";
 import { Metadata } from "next";
+import FollowButton from "src/components/FollowButton/FollowButton";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const user = await prisma.user.findUnique({ where: { id: params.id } });
@@ -24,6 +25,7 @@ export default async function UserProfile({ params }: Props) {
 		<>
 			<div className="m-20">{name}</div>
 			<div className="m-20">{bio}</div>
+			<FollowButton targetUserId={params.id} />
 		</>
 	);
 }

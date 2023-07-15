@@ -10,16 +10,45 @@ export async function POST(req: Request) {
 
 	const currentUserId = await prisma.user
 		.findUnique({
+			where: { email: currentUserEmail }
+		})
+		.then((user) => user?.id);
+
+		console.log(currentUserId)
+		
+        const record = await prisma.follows.create({
+            data:{
+                followerId: currentUserId!,
+                followingId: targetUserId!
+            }
+        })
+		console.log(record)
+
+    return NextResponse.json(record)
+}
+
+export async function DELETE(req: NextRequest) {
+
+	const session = await getServerSession(authOptions);
+	const currentUserEmail = session?.user?.email!;
+    const targetUserId = req.nextUrl.searchParams.get('targetUserId');
+
+
+   	const currentUserId = await prisma.user
+		.findUnique({
 			where: { email: currentUserEmail },
 		})
 		.then((user) => user?.id);
 
-        const record = await prisma.follows.create({
-            data:{
-                followerId: currentUserId,
-                followingId: targetUserId
-            }
-        })
-}
+    const record = await prisma.follows.delete({
+		where: {
+			followerId_followingId: {
+				followerId: currentUserId!,
+				followingId: targetUserId!,
+			},
+		},
+	});
 
-export async function DELETE(req: NextRequest) {}
+    return NextResponse.json(record)
+
+}
